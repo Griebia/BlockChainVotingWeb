@@ -37,7 +37,7 @@ import org.springframework.data.domain.PageRequest;
 @Route(value = "dashboard/:samplePersonID?/:action?(edit)", layout = MainLayout.class)
 @RolesAllowed("admin")
 @Uses(Icon.class)
-public class DashboardView extends Div implements BeforeEnterObserver {
+public class    DashboardView extends Div implements BeforeEnterObserver {
 
     private final String SAMPLEPERSON_ID = "samplePersonID";
     private final String SAMPLEPERSON_EDIT_ROUTE_TEMPLATE = "dashboard/%d/edit";

@@ -27,10 +27,10 @@ public class ImageCard extends LitTemplate {
     @Id
     private Span badge;
 
-    public ImageCard(String text, String url) {
+    public ImageCard(String title, String text, String url) {
         this.image.setSrc(url);
         this.image.setAlt(text);
-        this.header.setText("Title");
+        this.header.setText(title);
         this.subtitle.setText("Card subtitle");
         this.text.setText(
                 "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.");
