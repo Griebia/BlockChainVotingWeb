@@ -17,6 +17,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,11 @@ public class TransactionsView extends Div implements AfterNavigationObserver {
             = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client = new OkHttpClient();
 
-    String url = "http://localhost:8081/transactions";
+    private static List<String> urls = List.of(
+            "http://localhost:5000",
+            "http://localhost:5001",
+            "http://localhost:5002"
+    );
 
     public TransactionsView() {
         addClassName("transactions-view");
@@ -75,12 +80,14 @@ public class TransactionsView extends Div implements AfterNavigationObserver {
                 throw new RuntimeException("HTTP Content Format does not match");
             }
 
+            System.out.println(responseContent);
             Resp resp = this.objectMapper.readValue(responseContent, responseClass);
             return resp;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
     private HorizontalLayout createCard(Transaction transaction) {
         HorizontalLayout card = new HorizontalLayout();
         card.addClassName("card");
@@ -97,34 +104,36 @@ public class TransactionsView extends Div implements AfterNavigationObserver {
         header.setSpacing(false);
         header.getThemeList().add("spacing-s");
 
-        Span transactionId = new Span("Hash " + transaction.getTransactionId());
-        transactionId.addClassName("name");
-        header.add(transactionId);
-
         Span sender = new Span("Sender " + transaction.getSender());
         sender.addClassName("name");
 
         Span receiver = new Span("Receiver " + transaction.getRecipient());
         receiver.addClassName("name");
 
-        Span post = new Span(transaction.getValue());
-        post.addClassName("post");
-
-        description.add(header, sender,receiver, post);
+        description.add(header, sender, receiver);
         card.add(description);
         return card;
     }
+
     public List<Transaction> getTransactions() {
 
         System.out.println("Fetching all Comment objects through REST..");
 
+        List<Transaction> transactions = Arrays.asList();
 
-        // do fetch and map result
-        List<Transaction> comments = Arrays.asList(get(url, Transaction[].class));
+        try {
+            for (String url : urls) {
+                String urlConverted = url + "/transaction/all";
+                Transaction[] transactionArray = get(urlConverted, Transaction[].class);
+                transactions = Arrays.asList(transactionArray);
+            }
+        } catch (Exception e) {
+            System.out.println("There were a problem to get any server transaction information");
+        }
 
-        System.out.println(String.format("...received %d items.", comments.size()));
+        System.out.println(String.format("...received %d items.", transactions.size()));
 
-        return comments;
+        return transactions;
     }
 
     @Override
@@ -134,16 +143,6 @@ public class TransactionsView extends Div implements AfterNavigationObserver {
         List<Transaction> transactions = getTransactions();
 
         grid.setItems(transactions);
-    }
-
-    private static Transaction createTransaction(String image, String name, String date, String post, String likes,
-                                                 String comments, String shares) {
-        Transaction p = new Transaction();
-        p.setTransactionId(name);
-        p.setInputsValue(date);
-        p.setOutputsValue(post);
-
-        return p;
     }
 
 }
