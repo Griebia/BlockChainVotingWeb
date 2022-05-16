@@ -2,11 +2,13 @@ package com.blockchainvotingweb.views;
 
 import com.blockchainvotingweb.data.entity.User;
 import com.blockchainvotingweb.security.AuthenticatedUser;
-import com.blockchainvotingweb.views.addcandidate.AddcandidateView;
+import com.blockchainvotingweb.views.addcandidate.AddCandidateView;
 import com.blockchainvotingweb.views.candidates.CandidatesView;
-import com.blockchainvotingweb.views.dashboard.DashboardView;
+import com.blockchainvotingweb.views.getvote.GetVoteView;
 import com.blockchainvotingweb.views.transactions.TransactionsView;
 import com.blockchainvotingweb.views.vote.VoteView;
+import com.blockchainvotingweb.views.voteend.VoteEndView;
+import com.blockchainvotingweb.views.votestart.VoteStartView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -125,15 +127,13 @@ public class MainLayout extends AppLayout {
 
                 new MenuItemInfo("Vote", "la la-user", VoteView.class), //
 
-                new MenuItemInfo("Get Vote Key", "la la-user", VoteView.class), //
+                new MenuItemInfo("Get Vote Key", "la la-user", GetVoteView.class), //
 
-                new MenuItemInfo("Add candidate", "la la-columns", AddcandidateView.class), //
+                new MenuItemInfo("Add candidate", "la la-columns", AddCandidateView.class), //
 
-                new MenuItemInfo("Vote Results", "la la-columns", DashboardView.class), //
+                new MenuItemInfo("Vote Start", "la la-columns", VoteStartView.class), //
 
-                new MenuItemInfo("Vote Start", "la la-columns", DashboardView.class), //
-
-                new MenuItemInfo("Vote End", "la la-columns", DashboardView.class), //
+                new MenuItemInfo("Vote End", "la la-columns", VoteEndView.class), //
         };
         List<RouterLink> links = new ArrayList<>();
         for (MenuItemInfo menuItemInfo : menuItems) {

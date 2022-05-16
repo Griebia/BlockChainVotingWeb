@@ -52,13 +52,20 @@ class Transaction:
         return binascii.hexlify(signature).decode("utf-8")
 
 if __name__ == '__main__':
-    if len(sys.argv) > 2:
+    if len(sys.argv) == 4:
         sender = sys.argv[1]
         receiver = sys.argv[2]
         private_key_info = sys.argv[3]
         
         private_key = RSA.importKey(private_key_info)
         print(Transaction(sender, receiver).sign(private_key))
+    if len(sys.argv) == 3:
+        data = sys.argv[1]
+        private_key_info = sys.argv[2]
+        
+        private_key = RSA.importKey(private_key_info)
+        print(Transaction.sign_data(data.encode("utf-8"),private_key))
+
 
 
     

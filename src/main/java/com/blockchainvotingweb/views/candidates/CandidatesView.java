@@ -19,13 +19,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @JsModule("./views/candidates/candidates-view.ts")
 public class CandidatesView extends LitTemplate implements HasComponents, HasStyle {
 
-//    @Id
-//    private Select<String> sortBy;
-
     public CandidatesView() {
-        addClassNames("candidates-view", "flex", "flex-col", "h-full");
-//        sortBy.setItems("Popularity", "Newest first", "Oldest first");
-//        sortBy.setValue("Popularity");
 
         add(new ImageCard("Kandidatas1", "Snow mountains under stars",
                 "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80"));

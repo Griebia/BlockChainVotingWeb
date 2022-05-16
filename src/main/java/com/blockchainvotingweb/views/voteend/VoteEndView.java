@@ -1,57 +1,38 @@
-package com.blockchainvotingweb.views.vote;
+package com.blockchainvotingweb.views.voteend;
 
-import com.blockchainvotingweb.data.entity.SamplePerson;
 import com.blockchainvotingweb.data.entity.Url;
-import com.blockchainvotingweb.data.service.SamplePersonService;
-import com.blockchainvotingweb.data.tools.PrivateKeyReader;
 import com.blockchainvotingweb.data.tools.PythonInterface;
 import com.blockchainvotingweb.views.MainLayout;
-import com.blockchainvotingweb.views.transactions.Transaction;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import okhttp3.*;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.security.PermitAll;
-import javax.crypto.Cipher;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-@PageTitle("Vote")
-@Route(value = "Vote", layout = MainLayout.class)
+@PageTitle("Vote End")
+@Route(value = "VoteEnd", layout = MainLayout.class)
 @PermitAll
 @Uses(Icon.class)
-public class VoteView extends Div {
-
-    private TextField voter = new TextField("Voters wallet");
-    private TextField candidate = new TextField("Candidate wallet");
+public class VoteEndView extends Div {
     private final ObjectMapper objectMapper = new ObjectMapper();
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
@@ -62,28 +43,25 @@ public class VoteView extends Div {
 
     private Button vote = new Button("Save");
 
-    public VoteView() {
-        addClassName("vote-view");
+    public VoteEndView() {
+        addClassName("vote-end-view");
 
         add(createTitle());
         add(createFormLayout());
         add(createButtonLayout());
 
         vote.addClickListener(e -> {
-            if (!candidate.isEmpty() && !singleFileUpload.isAttached()) {
+            if (!singleFileUpload.isAttached()) {
                 return;
             }
-
-            String votersWallet = voter.getValue();
-            String candidateWallet = candidate.getValue();
             InputStream inputStream = memoryBuffer.getInputStream();
             String privateKey;
             Map<String, String> postInfo = new HashMap<>();
             try {
                 privateKey = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-                postInfo.put("sender", votersWallet);
-                postInfo.put("receiver", candidateWallet);
-                String signature = PythonInterface.signTransaction(votersWallet, candidateWallet, privateKey);
+                postInfo.put("data", "EndVote");
+                String signature = PythonInterface.signData(postInfo.get("data"), privateKey);
+
                 postInfo.put("signature", signature);
             } catch (Exception exception) {
                 System.out.println("The file reading failed");
@@ -92,7 +70,7 @@ public class VoteView extends Div {
 
 
             for (String url : Url.urls) {
-                String curUrl = url + "/transaction/new";
+                String curUrl = url + "/endvote";
                 try {
                     post(curUrl, Object.class, postInfo);
                 } catch (Exception ex) {
@@ -102,23 +80,13 @@ public class VoteView extends Div {
         });
     }
 
-    public static String hex(byte[] bytes) {
-        StringBuilder result = new StringBuilder();
-        for (byte aByte : bytes) {
-            result.append(String.format("%02x", aByte));
-            // upper case
-            // result.append(String.format("%02X", aByte));
-        }
-        return result.toString();
-    }
-
     private Component createTitle() {
-        return new H3("Cast vote");
+        return new H3("End vote");
     }
 
     private Component createFormLayout() {
         FormLayout formLayout = new FormLayout();
-        formLayout.add(voter, candidate, singleFileUpload);
+        formLayout.add(singleFileUpload);
         return formLayout;
     }
 
@@ -173,5 +141,4 @@ public class VoteView extends Div {
             throw new RuntimeException(e);
         }
     }
-
 }

@@ -5,19 +5,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PythonInterface {
-    public static String signData(String sender, String receiver, String privateKeyString) throws Exception {
+    public static String signTransaction(String sender, String receiver, String privateKeyString) throws Exception {
         ProcessBuilder processBuilder = new ProcessBuilder("python", resolvePythonScriptPath("transaction.py"), sender, receiver, privateKeyString);
         processBuilder.redirectErrorStream(true);
 
-//        System.out.println(data);
         System.out.println(privateKeyString);
-
         Process process = processBuilder.start();
         List<String> results = readProcessOutput(process.getInputStream());
         for (var info : results) {
             System.out.println(info);
         }
-        return results.get(0);
+        return results.get(results.size() - 1);
+    }
+
+    public static String signData(String data, String privateKeyString) throws Exception {
+        ProcessBuilder processBuilder = new ProcessBuilder("python", resolvePythonScriptPath("transaction.py"), data, privateKeyString);
+        processBuilder.redirectErrorStream(true);
+
+        System.out.println(privateKeyString);
+        Process process = processBuilder.start();
+        List<String> results = readProcessOutput(process.getInputStream());
+        for (var info : results) {
+            System.out.println(info);
+        }
+        return results.get(results.size() - 1);
     }
 
     private static List<String> readProcessOutput(InputStream inputStream) throws IOException {

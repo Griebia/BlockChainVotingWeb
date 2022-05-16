@@ -2,6 +2,8 @@
 @import url('./views/transactions-view.css');
 @import url('./views/candidates-view.css');
 @import url('./views/vote-view.css');
+@import url('./views/vote-start-view.css');
+@import url('./views/vote-end-view.css');
 @import url('line-awesome/dist/line-awesome/css/line-awesome.min.css');    html {
       --lumo-border-radius: 0px;
 
