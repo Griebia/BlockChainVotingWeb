@@ -4,6 +4,7 @@ import com.blockchainvotingweb.data.entity.SamplePerson;
 import com.blockchainvotingweb.data.entity.Url;
 import com.blockchainvotingweb.data.service.SamplePersonService;
 import com.blockchainvotingweb.data.tools.PrivateKeyReader;
+import com.blockchainvotingweb.data.tools.PythonInterface;
 import com.blockchainvotingweb.views.MainLayout;
 import com.blockchainvotingweb.views.transactions.Transaction;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -80,26 +81,28 @@ public class VoteView extends Div {
             Map<String, String> postInfo = new HashMap<>();
             try {
                 privateKey = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-                PrivateKey privKey = new PrivateKeyReader(privateKey).getPrivateKey();
-                Signature sig = Signature.getInstance("SHA256withRSA");
-                sig.initSign(privKey);
+//                PrivateKey privKey = new PrivateKeyReader(privateKey).getPrivateKey();
+//                Signature sig = Signature.getInstance("SHA256withRSA");
+//                sig.initSign(privKey);
 
                 postInfo.put("sender", votersWallet);
                 postInfo.put("receiver", candidateWallet);
+//                String jsonString = new ObjectMapper().configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true).writeValueAsString(postInfo);
+//                String data = DigestUtils.sha256Hex(jsonString);
+                String signature = PythonInterface.signData(votersWallet, candidateWallet, privateKey);
 
-                String jsonString = new ObjectMapper().configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true).writeValueAsString(postInfo);
-                String data = DigestUtils.sha256Hex(jsonString);
-                System.out.println(data);
-                sig.update(data.getBytes(StandardCharsets.UTF_8));
 
-                Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-                cipher.init(Cipher.ENCRYPT_MODE, privKey);
-                byte[] cipherText = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
-
-                byte[] signatureBytes = sig.sign();
-                String signatureString = hex(cipherText);
-                System.out.println(signatureString);
-                postInfo.put("signature", signatureString);
+//                System.out.println(data);
+//                sig.update(data.getBytes(StandardCharsets.UTF_8));
+//
+//                Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+//                cipher.init(Cipher.ENCRYPT_MODE, privKey);
+//                byte[] cipherText = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
+//
+//                byte[] signatureBytes = sig.sign();
+//                String signatureString = hex(cipherText);
+//                System.out.println(signatureString);
+                postInfo.put("signature", signature);
             } catch (Exception exception) {
                 System.out.println("The file reading failed");
                 return;

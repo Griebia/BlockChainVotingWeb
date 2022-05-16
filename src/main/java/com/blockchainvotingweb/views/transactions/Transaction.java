@@ -2,7 +2,7 @@ package com.blockchainvotingweb.views.transactions;
 
 public class Transaction {
     private String sender;
-    private String recipient;
+    private String receiver;
 
     public Transaction() {
     }
@@ -14,11 +14,11 @@ public class Transaction {
         this.sender = sender;
     }
 
-    public String getRecipient() {
-        return recipient;
+    public String getReceiver() {
+        return receiver;
     }
 
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
+    public void setReceiver(String recipient) {
+        this.receiver = recipient;
     }
 }

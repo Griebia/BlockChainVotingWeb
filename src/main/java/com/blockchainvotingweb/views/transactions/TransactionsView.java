@@ -107,7 +107,7 @@ public class TransactionsView extends Div implements AfterNavigationObserver {
         Span sender = new Span("Sender " + transaction.getSender());
         sender.addClassName("name");
 
-        Span receiver = new Span("Receiver " + transaction.getRecipient());
+        Span receiver = new Span("Receiver " + transaction.getReceiver());
         receiver.addClassName("name");
 
         description.add(header, sender, receiver);

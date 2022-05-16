@@ -125,10 +125,15 @@ public class MainLayout extends AppLayout {
 
                 new MenuItemInfo("Vote", "la la-user", VoteView.class), //
 
+                new MenuItemInfo("Get Vote Key", "la la-user", VoteView.class), //
+
                 new MenuItemInfo("Add candidate", "la la-columns", AddcandidateView.class), //
 
-                new MenuItemInfo("Dashboard", "la la-columns", DashboardView.class), //
+                new MenuItemInfo("Vote Results", "la la-columns", DashboardView.class), //
 
+                new MenuItemInfo("Vote Start", "la la-columns", DashboardView.class), //
+
+                new MenuItemInfo("Vote End", "la la-columns", DashboardView.class), //
         };
         List<RouterLink> links = new ArrayList<>();
         for (MenuItemInfo menuItemInfo : menuItems) {
