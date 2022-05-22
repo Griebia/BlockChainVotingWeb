@@ -68,7 +68,7 @@ public class GetVoteView extends Div {
     }
 
     private Component createTitle() {
-        return new H3("Cast vote");
+        return new H3("Get vote");
     }
 
     private Component createFormLayout() {
