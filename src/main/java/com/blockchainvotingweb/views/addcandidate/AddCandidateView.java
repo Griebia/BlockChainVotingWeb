@@ -11,6 +11,7 @@ import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -22,6 +23,7 @@ import okhttp3.*;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +32,7 @@ import java.util.Map;
 
 @PageTitle("Add candidate")
 @Route(value = "AddCandidate", layout = MainLayout.class)
-@PermitAll
+@RolesAllowed("admin")
 @Uses(Icon.class)
 public class AddCandidateView extends Div {
 
@@ -40,7 +42,7 @@ public class AddCandidateView extends Div {
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client = new OkHttpClient();
-
+    private Label error = new Label();
     private MemoryBuffer memoryBuffer = new MemoryBuffer();
     private Upload singleFileUpload = new Upload(memoryBuffer);
 
@@ -49,12 +51,15 @@ public class AddCandidateView extends Div {
     public AddCandidateView() {
         addClassName("vote-view");
 
+        add(error);
         add(createTitle());
         add(createFormLayout());
         add(createButtonLayout());
 
         createCandidate.addClickListener(e -> {
-            if (!candidateName.isEmpty() && !singleFileUpload.isAttached()) {
+            if (candidateName.isEmpty() || !singleFileUpload.isAttached()) {
+                error.getStyle().set("color", "red");
+                error.setText("Missing fields");
                 return;
             }
 
@@ -72,16 +77,21 @@ public class AddCandidateView extends Div {
                 return;
             }
 
-
+            AddCandidate candidate = null;
             for (String url : Url.urls) {
                 String curUrl = url + "/candidate/new";
                 try {
-                    AddCandidate candidate = post(curUrl, AddCandidate.class, postInfo);
+                    candidate = post(curUrl, AddCandidate.class, postInfo);
                     System.out.println(candidate.getWallet());
                     break;
                 } catch (Exception ex) {
                     System.out.println("Failed to send info to " + curUrl);
                 }
+            }
+
+            if (candidate == null){
+                error.getStyle().set("color", "red");
+                error.setText("Candidate could not be created");
             }
         });
     }

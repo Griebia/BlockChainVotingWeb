@@ -22,7 +22,7 @@ export class ImageCard extends LitElement {
       <span class="text-xl font-semibold" id="header"></span>
       <span class="text-s text-secondary" id="subtitle"></span>
       <p class="my-m" id="text"></p>
-      <span theme="badge" id="badge"></span>
+      <p class="my-m" id="votes"></p>
     </li> `;
   }
 }

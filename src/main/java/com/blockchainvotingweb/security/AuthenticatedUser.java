@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthenticatedUser {
-
+    private boolean hasVoted = false;
     @Autowired
     private UserRepository userRepository;
 
@@ -27,6 +27,14 @@ public class AuthenticatedUser {
 
     public Optional<User> get() {
         return getAuthentication().map(authentication -> userRepository.findByUsername(authentication.getName()));
+    }
+
+    public void setHasVoted(){
+        hasVoted = true;
+    }
+
+    public boolean getHasVoted(){
+        return  hasVoted;
     }
 
     public void logout() {

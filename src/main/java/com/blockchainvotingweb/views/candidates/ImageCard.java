@@ -21,10 +21,14 @@ public class ImageCard extends LitTemplate {
     @Id
     private Paragraph text;
 
-    public ImageCard(String title, String text, String url) {
+    @Id
+    private Paragraph votes;
+
+    public ImageCard(String title, String text, String votes, String url) {
         this.image.setSrc(url);
         this.image.setAlt(text);
         this.header.setText(title);
         this.text.setText(text);
+        this.votes.setText(votes);
     }
 }

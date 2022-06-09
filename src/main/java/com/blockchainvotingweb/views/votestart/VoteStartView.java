@@ -21,6 +21,7 @@ import okhttp3.*;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +30,7 @@ import java.util.Map;
 
 @PageTitle("Vote Start")
 @Route(value = "VoteStart", layout = MainLayout.class)
-@PermitAll
+@RolesAllowed("admin")
 @Uses(Icon.class)
 public class VoteStartView extends Div {
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -72,6 +73,7 @@ public class VoteStartView extends Div {
                 String curUrl = url + "/startvote";
                 try {
                     post(curUrl, Object.class, postInfo);
+                    break;
                 } catch (Exception ex) {
                     System.out.println("Failed to send info to " + curUrl);
                 }

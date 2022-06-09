@@ -18,6 +18,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -32,6 +33,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.crypto.Cipher;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +48,7 @@ import java.util.Map;
 
 @PageTitle("Vote")
 @Route(value = "Vote", layout = MainLayout.class)
-@PermitAll
+@RolesAllowed("user")
 @Uses(Icon.class)
 public class VoteView extends Div {
 
@@ -56,21 +58,22 @@ public class VoteView extends Div {
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client = new OkHttpClient();
+    private Label error = new Label();
 
     private MemoryBuffer memoryBuffer = new MemoryBuffer();
     private Upload singleFileUpload = new Upload(memoryBuffer);
 
-    private Button vote = new Button("Save");
+    private Button vote = new Button("Vote");
 
     public VoteView() {
         addClassName("vote-view");
-
+        add(error);
         add(createTitle());
         add(createFormLayout());
         add(createButtonLayout());
 
         vote.addClickListener(e -> {
-            if (!candidate.isEmpty() && !singleFileUpload.isAttached()) {
+            if (candidate.isEmpty() || !singleFileUpload.isAttached()) {
                 return;
             }
 
@@ -90,14 +93,22 @@ public class VoteView extends Div {
                 return;
             }
 
-
+            boolean hasVoted = false;
             for (String url : Url.urls) {
                 String curUrl = url + "/transaction/new";
                 try {
                     post(curUrl, Object.class, postInfo);
+                    hasVoted = true;
+//                    System.out.println(message);
+                    break;
                 } catch (Exception ex) {
                     System.out.println("Failed to send info to " + curUrl);
                 }
+            }
+
+            if (!hasVoted) {
+                error.getStyle().set("color", "red");
+                error.setText("Failed to vote, it may not have started");
             }
         });
     }

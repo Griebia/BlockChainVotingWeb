@@ -9,7 +9,6 @@ public class PythonInterface {
         ProcessBuilder processBuilder = new ProcessBuilder("python", resolvePythonScriptPath("transaction.py"), sender, receiver, privateKeyString);
         processBuilder.redirectErrorStream(true);
 
-        System.out.println(privateKeyString);
         Process process = processBuilder.start();
         List<String> results = readProcessOutput(process.getInputStream());
         for (var info : results) {
@@ -22,7 +21,6 @@ public class PythonInterface {
         ProcessBuilder processBuilder = new ProcessBuilder("python", resolvePythonScriptPath("transaction.py"), data, privateKeyString);
         processBuilder.redirectErrorStream(true);
 
-        System.out.println(privateKeyString);
         Process process = processBuilder.start();
         List<String> results = readProcessOutput(process.getInputStream());
         for (var info : results) {

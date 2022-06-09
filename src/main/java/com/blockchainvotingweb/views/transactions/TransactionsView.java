@@ -74,6 +74,7 @@ public class TransactionsView extends Div implements AfterNavigationObserver {
             String responseContent = response.body().string();
 
             if (500 <= response.code()) {
+
             }
 
             if (400 == response.code()) {
